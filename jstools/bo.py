@@ -8,7 +8,10 @@ class BuildJS(object):
     @format for config
     """
     def __init__(self, buildout, name, options):
-        self.defaults = defaults = {'resource-dir':options.get('resource-dir')}
+        self.defaults = defaults = {
+                'resource-dir': options.get(
+                    'resource-dir', buildout['buildout']['directory'])
+                }
         defaults.update(options)
         self.options = options
         self.buildout = buildout
