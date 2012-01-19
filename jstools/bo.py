@@ -26,11 +26,13 @@ class BuildJS(object):
 
     
     def install(self):
-        self.merge = merge.Merger.from_fn(tuple(self.options.get('config').split()),
-                                          output_dir=self.options.get('output-dir'),
-                                          root_dir=self.options.get('base-dir'),
-                                          defaults=self.defaults,
-                                          printer=self.buildout._logger)
+        buildout_dir = self.buildout['buildout']['directory']
+        self.merge = merge.Merger.from_fn(
+                tuple(self.options.get('config').split()),
+                output_dir=self.options.get('output-dir', buildout_dir),
+                root_dir=self.options.get('base-dir', buildout_dir),
+                defaults=self.defaults,
+                printer=self.buildout._logger)
         files = self.merge.run(uncompressed=not self.compress, single=self.only)
         return files
 
