@@ -8,11 +8,6 @@ class BuildJS(object):
     @format for config
     """
     def __init__(self, buildout, name, options):
-        self.defaults = defaults = {
-                'resource-dir': options.get(
-                    'resource-dir', buildout['buildout']['directory'])
-                }
-        defaults.update(options)
         self.options = options
         self.buildout = buildout
         if options.get('output') is not None:
@@ -26,11 +21,16 @@ class BuildJS(object):
 
     
     def install(self):
-        self.merge = merge.Merger.from_fn(tuple(self.options.get('config').split()),
-                                          output_dir=self.options.get('output-dir'),
-                                          root_dir=self.options.get('base-dir'),
-                                          defaults=self.defaults,
-                                          printer=self.buildout._logger)
+        buildout_dir = self.buildout['buildout']['directory']
+        self.merge = merge.Merger.from_fn(
+                tuple(self.options.get('config').split()),
+                output_dir=self.options.get('output-dir', buildout_dir),
+                root_dir=self.options.get('base-dir', buildout_dir),
+                defaults={
+                    'resource-dir': self.options.get(
+                        'resource-dir', buildout_dir)
+                },
+                printer=self.buildout._logger)
         files = self.merge.run(uncompressed=not self.compress, single=self.only)
         return files
 
