@@ -23,7 +23,7 @@ class BuildJS(object):
     def install(self):
         buildout_dir = self.buildout['buildout']['directory']
         self.merge = merge.Merger.from_fn(
-                tuple(self.options.get('config').split()),
+                tuple(self.options.get('config').split('\n')),
                 output_dir=self.options.get('output-dir', buildout_dir),
                 root_dir=self.options.get('base-dir', buildout_dir),
                 defaults={
