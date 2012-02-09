@@ -19,7 +19,7 @@ Variables
 
  * compress -- True or False, minify output files
 
- * config -- path(s) to jsbuild config file(s)
+ * config -- path(s) to jsbuild config file(s), one line per path
 
  * resource-dir -- not required, used for interpolation of jsbuild config
 
