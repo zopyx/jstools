@@ -16,10 +16,6 @@ Create a Git tag and push it to GitHub::
 ``upstream`` is the name of the git@github.com:camptocamp/jstools.git remote
 here.
 
-Build a source package::
+Build a source package and upload it to pypi.python.org::
 
-    $ python setup.py sdist
-
-Upload to pypi.python.org::
-
-    $ python setup.py upload
+    $ python setup.py sdist upload
