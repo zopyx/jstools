@@ -324,8 +324,8 @@ class SourceFile(object):
         """
         """
         self.filepath = filepath
-        self.fullpath = os.path.join(sourcedir, filepath)
-        self.abspath = os.path.join(root_dir, self.fullpath)
+        self.fullpath = '/'.join([sourcedir.rstrip('/'), filepath])
+        self.abspath = os.path.join(root_dir, os.path.normpath(self.fullpath))
         self.exclude = exclude
         self._source = None
         self._requires = _marker
