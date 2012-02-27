@@ -1,58 +1,10 @@
-2011-10-06 elemoine  <eric.lemoine@camptocamp.com>
+Changelog
+---------
 
-    * make it possible to supply multiple file paths in the buildout "config" var
+0.6
+~~~
 
-2011-10-06 bbinet  <bruno.binet@camptocamp.com>
-
-    * add --base-dir option which sets a base directory for root dirs
-
-2011-10-06 bbinet  <bruno.binet@camptocamp.com>
-
-    * add support for a --list-only option which outputs the list
-      javascript files that would have been merged
-    * activate the concatenate feature by passing the concat option to
-      merger.run
-
-2011-03-30 bbinet  <bruno.binet@camptocamp.com>
-
-    * fix trailing space bug in @requires/@include statements
-
-2011-03-22 fredj  <frederic.junod@camptocamp.com>
-
-    * refactor the python loggers.
-
-2011-11-17  bbinet  <bruno.binet@camptocamp.com>
-
-	* Add support for directories exclusion
-	* Add support for regexp files exclusion
-
-2009-06-17  whit  <whit@opengeo.org>
-
-	* Add implicit file inclusion to merge.py.  In a config defines no
-	"include", "first", or "last", automatically added every file
-	found in the directory not explicitly excluded.
-
-2009-06-15  whit  <whit@opengeo.org>
-
-	* Merge Eric Lemoine's Python 2.4 compatibility fix
-
-2009-06-15  whit  <whit@opengeo.org>
-
-	* Hooked up streamhandler to reenable -v flag
-
-2009-04-29  whit  <whit@opengeo.org>
-
-	* Add docparser for use with sphinx (from tschaub)
-
-2009-04-23  whit  <whit@opengeo.org>
-
-	* add yuicompressor support
-
-2009-04-22  whit  <whit@opengeo.org>
-
-	* Added "concatenate" flag for automatically creating a single
-	  file out of a config without further configuration changes.
-
-	* Removed external dependencies on decorator and plone.memoize
-
-
+ * Also support the singular require directive, not just ``requires`` - ahocevar <andreas.hocevar@gmail.com>
+ * base-dir, output-dir and resource-dir now default to the buildout directory - Bruno Binet <bruno.binet@gmail.com>
+ * make the buildout receipe work with config paths including whitespaces - Éric Lemoine <eric.lemoine@gmail.com>
+ * fix bug where Merger.list_run generates URLs including %5C chars on Windows - Éric Lemoine <eric.lemoine@gmail.com>
