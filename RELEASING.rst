@@ -11,7 +11,10 @@ then commit and push the change.
 Create a Git tag and push it to GitHub::
 
     $ git tag -a x.y -m 'version x.y'
-    $ git push tag x.y
+    $ git push upstream tag x.y
+
+``upstream`` is the name of the git@github.com:camptocamp/jstools.git remote
+here.
 
 Build a source package::
 
