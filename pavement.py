@@ -28,7 +28,7 @@ except IOError:
     description = ""
 
 setup(
-    name='JSTools',
+    name='JSTools-BPG',
     version=version,
     description="assorted python tools for building (packing, aggregating) javascript libraries",
     long_description=description,
