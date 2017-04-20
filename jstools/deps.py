@@ -1,5 +1,10 @@
-from ConfigParser import ConfigParser
-from ConfigParser import NoSectionError
+
+try:
+    from ConfigParser import ConfigParser
+    from ConfigParser import NoSectionError
+except ImportError:
+    from configparser import ConfigParser
+    from configparser import NoSectionError
 from jstools import utils, merge
 from memoize import memoizedproperty
 import logging
@@ -16,7 +21,7 @@ class DepMap(ConfigParser):
     """
     template = dict(require='// @requires %s\n',
                      include='// @include %s\n')
-    
+
     def __init__(self, defaults=None, printer=logger):
         ConfigParser.__init__(self, defaults)
         self.printer = printer
@@ -24,7 +29,7 @@ class DepMap(ConfigParser):
     @memoizedproperty
     def alias_map(self):
         return utils.SectionMap(self, 'alias')
-        
+
     @classmethod
     def from_resource(cls, resource_name, dist=DIST, defaults=None, printer=logger):
         conf = pkg_resources.resource_stream(dist, resource_name)
@@ -44,7 +49,7 @@ class DepMap(ConfigParser):
     @memoizedproperty
     def reverse_alias_map(self):
         return dict((v, k) for k, v in self.alias_map.items())
-    
+
     def get_dependencies_by_filename(self, filename):
         alias = self.reverse_alias_map[filename]
         return self.get_dependencies_by_alias(alias)
@@ -54,12 +59,12 @@ class DepMap(ConfigParser):
             return utils.SectionMap(self, alias)
         except NoSectionError:
             return None
-    
+
     get_deps = get_dependencies_by_alias
 
     def guess_alias_by_filename(self, filename, sorter=sorted, single=True):
         guesses = (self.reverse_alias_map.get(fn) for fn in sorter(self.reverse_alias_map.keys()) if fn.endswith(filename))
-        
+
         if single:
             try:
                 return guesses.next()
@@ -77,7 +82,7 @@ class DepMap(ConfigParser):
                                         "Check dependency cfg for alias mismatch." \
                                         %(alias, self.alias_map.keys()))
 
-            
+
 class AliasNotFound(KeyError):
     """
     Exception for any time an alias is not found

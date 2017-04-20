@@ -3,8 +3,13 @@ utils.py
 
 Copyright (c) 2008 OpenGeo. All rights reserved.
 """
-from ConfigParser import NoSectionError
-from ConfigParser import ConfigParser
+try:
+    from ConfigParser import ConfigParser
+    from ConfigParser import NoSectionError
+except ImportError:
+    from configparser import ConfigParser
+    from configparser import NoSectionError
+
 from UserDict import DictMixin
 import sys
 import logging
@@ -42,7 +47,7 @@ class SectionMap(DictMixin):
     @property
     def section_items(self):
         return self.cp.items(self.section)
-    
+
     def __getitem__(self, key):
         return dict(self.section_items)[key]
 
@@ -83,7 +88,7 @@ def retrieve_config(section=None, strict=False):
     venv = os.environ.get("VIRTUAL_ENV")
     if venv and (path(venv) / fn).exists():
         return section_or_parser(path(venv) / fn)
-    
+
     user = path(os.path.expanduser("~/"))
     if (user / fn).exists():
         return section_or_parser(user / fn)

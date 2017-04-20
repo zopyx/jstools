@@ -2,7 +2,10 @@
 Integration for creating sphinx compatible docs from javascript source
 comments
 """
-from ConfigParser import ConfigParser
+try:
+    from ConfigParser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
 from jinja2 import Template
 from jstools import tsort
 import os
@@ -30,9 +33,9 @@ class DocParser(ConfigParser):
         fns = parser.read(fn)
         assert fns, ValueError("No valid config files: %s" % fns)
         return parser
-    
-    key_list = () 
-    keys = 'root', 
+
+    key_list = ()
+    keys = 'root',
 
     def make_cfg(self, section):
         cfg = dict(self.items(section))
@@ -43,7 +46,7 @@ class DocParser(ConfigParser):
         for key in self.keys:
             cfg.setdefault(key, None)
         return cfg
-    
+
     def run(self):
         sections = self.sections()
         # @@ how much of this is shared with merge.py?
@@ -64,18 +67,18 @@ class DocParser(ConfigParser):
                             cfg)
                         if jsfile.data:
                             files[filepath] = jsfile
-        
+
             # create dict of dependencies
             dependencies = {}
             for filepath, jsfile in files.items():
                 dependencies[filepath] = jsfile.extends
-            
+
             # extend data with any data from parents
             for filepath in tsort.sort(dependencies):
                 jsfile = files[filepath]
                 if jsfile.extends:
                     jsfile.inherit([files[parentpath] for parentpath in sorted(jsfile.extends, reverse=True) if parentpath in files])
-                    
+
                 # parse template for each file
                 template_filename = os.path.join(sourcedir, filepath.split(SUFFIX_JS)[0] + SUFFIX_JST)
                 if not os.path.exists(template_filename):
@@ -103,14 +106,14 @@ class SourceFile(object):
         self._comments = _marker
         self._context = _marker
         self.extends = []
-    
+
     @classmethod
     def from_filename(cls, filename, options=None):
         fh = open(filename, "U")
         source = fh.read()
         fh.close()
         return cls(source, options=options)
-        
+
     @property
     def comments(self):
         if self._comments == _marker:
@@ -139,7 +142,7 @@ class SourceFile(object):
                 comments += dict(label=label, block=block),
             self._comments = comments
         return self._comments
-    
+
     @property
     def data(self):
         if self._data == _marker:
@@ -163,7 +166,7 @@ class SourceFile(object):
             else:
                 self._data = None
         return self._data
-    
+
     def _add_data(self, data, label, block):
         m = re.match(r"(\w+)\[(.*?)\]", label)
         if m:
@@ -181,7 +184,7 @@ class SourceFile(object):
                 data[name] += [block]
         else:
             data[label] = block
-    
+
     def inherit(self, files):
         for obj in files:
             data = obj.data

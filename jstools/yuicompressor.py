@@ -15,7 +15,7 @@ def compress(input, args, cfg):
     open(tpath, "w+").write(input)
 
     arg_string = "java -jar %s --type=js %s" %(paths.pop(0), tpath)
-    
+
     new_env = dict(os.environ)
     if len(paths):
         new_env['CLASSPATH'] = paths.pop()
@@ -33,7 +33,7 @@ def compress(input, args, cfg):
 def find_paths(args, cfg, limit=False):
     """
     cascading lookup, first non null match wins
-    
+
     arg: jarpath, None (assume environmental variable)
     arg: jarpath, classpath
     build config: jarpath, classpath
@@ -46,7 +46,7 @@ def find_paths(args, cfg, limit=False):
     >>> cp = ConfigParser()
     >>> find_paths("yui", cp, limit=True)
     None, None,
-    
+
     >>> find_paths("yui:/my/yui/jar", cp, limit=True)
     assert ret == "/my/yui/jar", None,
 
@@ -69,7 +69,7 @@ def find_paths(args, cfg, limit=False):
     Lastly, if no jar or classpath is found in the build config or
     command line, we look for a global config file.  Paver's yui
     install must be run to insure this is setup.
-     
+
     >>> find_paths("yui", ConfigParser(), limit=True)
     "/conf/classpath", "/conf/classpath",
     """
@@ -85,20 +85,20 @@ def find_paths(args, cfg, limit=False):
         classpath = ":".join(path)
         paths.update(dict(jarpath=jarpath,
                           classpath=classpath))
-        
+
     if not all(paths.values()) and cfg.has_section("meta"):
         paths = nondestructive_populate(utils.SectionMap(cfg, "meta"), paths)
 
     if limit:
         # mainly for testing purposes
         return paths
-    
+
     # move to implicit options
     if not all(paths.values()):
         gc = utils.retrieve_config("yui_compressor")
         if gc is not None:
             paths = nondestructive_populate(gc, paths)
-    
+
     return paths['jarpath'], paths['classpath'],
 
 def nondestructive_populate(valmap, path_map):

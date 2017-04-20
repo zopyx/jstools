@@ -3,7 +3,10 @@ merge.py
 
 Copyright (c) 2008 OpenGeo. All rights reserved.
 """
-from ConfigParser import ConfigParser
+try:
+    from ConfigParser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
 from jstools import REQ, DIST
 from jstools import tsort
 from StringIO import StringIO
@@ -53,7 +56,7 @@ class Merger(ConfigParser):
         self.output_dir = output_dir
         self.root_dir = root_dir
         self.printer = printer
-        
+
     @classmethod
     def from_fn(cls, fn, output_dir=None, root_dir=None, defaults=None, printer=logger):
         """Load up a list of config filenames in our merger"""
@@ -74,7 +77,7 @@ class Merger(ConfigParser):
     def make_sourcefile(self, sourcedir, filepath, exclude):
         self.printer.debug("Importing: %s" % filepath)
         return SourceFile(self.root_dir, sourcedir, filepath, exclude)
-    
+
     def extract_deps(self, cfg, depmap=None):
         #@@ this function needs to be decomposed into smaller testable bits
         sourcedirs = cfg['root']
@@ -85,7 +88,7 @@ class Merger(ConfigParser):
         all_inc = cfg['first'] + cfg['include'] + cfg['last']
         files = {}
         implicit = False
-        if not len(include):            
+        if not len(include):
             # implicit file inclusion
             implicit = True
 
@@ -114,13 +117,13 @@ class Merger(ConfigParser):
                                 break
                         else:
                             raise MissingImport("File '%s' not found in root directories" % path)
-        
+
         # create list of dependencies
         dependencies = {}
         for filepath, info in files.items():
             dependencies[filepath] = info.requires
 
-        
+
         # get tuple of files ordered by dependency
         self.printer.debug("Sorting dependencies.")
         order = [x for x in tsort.sort(dependencies)]
@@ -134,7 +137,7 @@ class Merger(ConfigParser):
 
         parts = ('first', 'include', 'last')
         required_files = []
-        
+
         ## Make sure all imports are in files dictionary
         for part in parts:
             for fp in cfg[part]:
@@ -168,7 +171,7 @@ class Merger(ConfigParser):
             merged = '(function(){%s})();' % merged
         return merged
 
-    key_list = 'root', 'include', 'exclude', 'last', 'first', 
+    key_list = 'root', 'include', 'exclude', 'last', 'first',
     keys = 'license', 'closure',
 
     def make_cfg(self, section):
@@ -240,7 +243,7 @@ class Merger(ConfigParser):
                 lic[outputfilename] = license
             cat[outputfilename] = merged
             newfiles.append(outputfilename)
-            
+
         outputfilename = os.path.join(self.output_dir, outfile)
         catted = StringIO()
         license = StringIO()
@@ -266,7 +269,7 @@ class Merger(ConfigParser):
         self.printer.info("Writing to %s (%d KB)" % (outputfilename, int(len(merged) / 1024)))
         sfb = file(outputfilename, "w").write(merged)
         newfiles = [outputfilename]
-            
+
         return newfiles
 
     def nocat_run(self, sections, uncompressed=False, strip_deps=True, compressor='default'):
@@ -287,7 +290,7 @@ class Merger(ConfigParser):
                 self.printer.debug("Adding license file: %s" %cfg['license'])
                 merged = "\n".join((license, merged))
             file(outputfilename, "w").write(merged)
-                
+
             newfiles.append(outputfilename)
         return newfiles
 
@@ -303,7 +306,7 @@ class Merger(ConfigParser):
         if single is not None:
             assert single in sections, ValueError("%s not in %s" %(single, sections))
             sections = [single]
-            
+
         if list_only:
             return self.list_run(sections)
         if concatenate:
@@ -362,7 +365,7 @@ class SourceFile(object):
         if req is _marker:
             self._include = [x.strip() for x in RE_INCLUDE.findall(self.source) \
                              if x not in self.exclude]
-                                   
+
         return self._include
 
 

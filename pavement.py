@@ -13,7 +13,10 @@ from paver.tasks import help, needs
 from paver.easy import call_task
 from setuptools import find_packages
 from paver.setuputils import setup
-from ConfigParser import ConfigParser
+try:
+    from ConfigParser import ConfigParser
+except ImportError:
+    from configparser import ConfigParser
 from paver import setuputils
 
 setuputils.install_distutils_tasks()
@@ -33,7 +36,7 @@ setup(
                  "Programming Language :: JavaScript",
                  "Topic :: Software Development :: Build Tools",
                  "License :: OSI Approved :: BSD License"
-                 ], 
+                 ],
     keywords='javascript',
     author='assorted',
     author_email='jstools@googlegroups.com',
@@ -63,7 +66,7 @@ setup(
     extras_require=dict(yuicompressor=["Paver"],
                         sphinx=['Jinja2'],
                         proxy=['WSGIProxy']),
-    
+
     test_suite='nose.collector',
     tests_require=['nose']
     )
@@ -129,7 +132,7 @@ def test():
 ##             call_task(task)
 ##         except :
 ##             import pdb, sys; pdb.post_mortem(sys.exc_info()[2])
-    
+
 ##     info("jstools released")
 
 @task
@@ -139,7 +142,7 @@ def test():
           ("overwrite", 'o', "overwrite old version")])
 def get_yuicomp():
     current_dir = path.getcwd()
-    lib_dir = current_dir / "lib" 
+    lib_dir = current_dir / "lib"
     if not lib_dir.exists():
         lib_dir.mkdir()
     yui_dir = lib_dir / ("yuicompressor-%s" % options.compressor_version)
@@ -147,7 +150,7 @@ def get_yuicomp():
 
     if getattr(options, "overwrite", False) and yui_dir.exists():
         sh("rm -rf %s" %yui_dir)
-    
+
     if not yui_dir.exists():
         zip_file = lib_dir / options.zip_name
         lib_dir.chdir()
@@ -160,7 +163,7 @@ def get_yuicomp():
         return True
 
     info("yui compressor already downloaded")
-    
+
     if getattr(options, 'set_as_default', None):
         set_yui_version(jst_conf, options.compressor_version, yui_dir)
 
